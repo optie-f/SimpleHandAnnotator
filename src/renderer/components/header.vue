@@ -1,20 +1,17 @@
 <template>
-  <v-toolbar app class="elevation-0" dark height="48">
+  <v-toolbar app class="elevation-0"
+  dark height="48">
      <!-- <v-toolbar-side-icon></v-toolbar-side-icon> -->
      <v-toolbar-title>Simple Hand Annotator</v-toolbar-title>
      <v-spacer></v-spacer>
-     <v-btn-toggle v-model="editMode">
-        <v-btn flat value="editPoint" class="text-none">
-          <v-icon>mdi-pin</v-icon>
-          <span>Edit Point</span>
+     <v-btn-toggle v-model="canvasSize">
+        <v-btn flat value="OutPutSize" class="text-none">
+          <v-icon>mdi-image-size-select-large</v-icon>
+          <span>OutPutSize</span>
         </v-btn>
-        <v-btn flat value="movePoint" class="text-none">
-          <v-icon>mdi-cursor-move</v-icon>
-          <span>Move Points</span>
-        </v-btn>
-        <v-btn flat value="moveImage" class="text-none">
-          <v-icon>mdi-crop-free</v-icon>
-          <span>Move Image</span>
+        <v-btn flat value="FitToView" class="text-none">
+          <v-icon>mdi-resize</v-icon>
+          <span>FitToView</span>
         </v-btn>
      </v-btn-toggle>
   </v-toolbar>
@@ -26,18 +23,20 @@
     name: 'annotate-header',
     data() {
       return {
-        editMode: 'editPoint',
+        canvasSize: 'FitToView',
       };
+    },
+    watch: {
+      canvasSize(newValue) {
+        const payload = {
+          FitToView: newValue === 'FitToView',
+        };
+        this.$store.commit('TOGGLEFITTOVIEW', payload);
+      },
     },
   };
 
 </script>
 
 <style>
-  /* label {
-    text-align: center;
-    font-family: "Helvetica Neue", sans-serif;
-    font-size: 8px;
-    color: #303133;
-  } */
 </style>

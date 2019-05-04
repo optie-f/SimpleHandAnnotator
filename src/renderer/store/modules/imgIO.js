@@ -5,8 +5,8 @@ const defaultKeyPoints = {
     0.75, 0.6,
   ],
   finger1: [
+    0.6, 0.6,
     0.6, 0.7,
-    0.6, 0.8,
     0.6, 0.8,
   ],
   finger2: [
@@ -15,8 +15,8 @@ const defaultKeyPoints = {
     0.5, 0.9,
   ],
   finger3: [
+    0.4, 0.6,
     0.4, 0.7,
-    0.4, 0.8,
     0.4, 0.8,
   ],
   finger4: [
@@ -32,11 +32,12 @@ const defaultKeyPoints = {
 const state = {
   ptr: 0,
   selectedFiles: [],
-  viewHeight: 128,
-  viewWidth: 128,
-  outputWidth: 128,
-  outputHeight: 128,
+  viewHeight: 224,
+  viewWidth: 224,
+  outputWidth: 224,
+  outputHeight: 224,
   FitToView: true,
+  imgDraggable: true,
   keyPointsArray: [],
 };
 
@@ -61,6 +62,8 @@ const mutations = {
   SETCANVASCONFIG(state, payload) {
     state.outputWidth = payload.outputWidth;
     state.outputHeight = payload.outputHeight;
+  },
+  TOGGLEFITTOVIEW(state, payload) {
     state.FitToView = payload.FitToView;
   },
   SETVIEWCONTAINERSIZE(state, payload) {
@@ -90,8 +93,11 @@ const getters = {
   ptr(state) {
     return state.ptr;
   },
+  imgDraggable(state) {
+    return state.imgDraggable;
+  },
   currentImg(state) {
-    if (state.selectedFiles.length === 0) return '';
+    if (state.selectedFiles.length === 0) return false;
     return state.selectedFiles[state.ptr];
   },
   currentKeyPoints(state) {
@@ -124,6 +130,34 @@ const getters = {
       canvasWidth: state.outputWidth,
       canvasHeight: state.outputHeight,
     };
+  },
+  KeyPointsCSVheader(state, getters) {
+    let result = '';
+    for (let i = 0; i < getters.classes.length; i += 1) {
+      const cls = getters.classes[i];
+      const clsKeyPointsArr = getters.currentKeyPoints[cls];
+      for (let j = 0; j < clsKeyPointsArr.length; j += 2) {
+        result += `${cls}-${j / 2}-x,`;
+        result += `${cls}-${j / 2}-y,`;
+      }
+    }
+    result += '\n';
+    return result;
+  },
+  getKeyPointsCSVrowOf: (state, getters) => (ptr) => {
+    let result = '';
+    for (let i = 0; i < getters.classes.length; i += 1) {
+      const cls = getters.classes[i];
+      const clsKeyPointsArr = state.keyPointsArray[ptr][cls];
+      for (let j = 0; j < clsKeyPointsArr.length; j += 2) {
+        result += Math.round(clsKeyPointsArr[j] * state.outputWidth);
+        result += ',';
+        result += Math.round(clsKeyPointsArr[j + 1] * state.outputHeight);
+        result += ',';
+      }
+    }
+    result += '\n';
+    return result;
   },
 };
 

@@ -28,6 +28,12 @@
   const margin = 16;
   const footerHeight = 100 + (72 / 2);
   const toolbarHeight = 48 + margin + 48;
+  const classColor = [
+    '#FF6D00',
+    '#FFD600',
+    '#AEEA00',
+    '#00BFA5',
+    '#00B8D4'];
 
   // View...Window 内で canvas を表示しうる最大領域
   // canvas...
@@ -44,14 +50,14 @@
         configKonva: {
           x: 0,
           y: 0,
-          width: 128,
-          height: 128,
+          width: 224,
+          height: 224,
         },
         configImage: {
           x: 0,
           y: 0,
-          width: 128,
-          height: 128,
+          width: 224,
+          height: 224,
           image: null,
           draggable: true,
         },
@@ -69,7 +75,7 @@
           const pos = imNode.absolutePosition();
           this.$refs.img.getNode().absolutePosition({
             x: pos.x * (newSize.canvasWidth / oldSize.canvasWidth),
-            y: pos.y * (newSize.canvasHeight / oldSize.canvasHeight),
+            y: pos.y * (newSize.canvasHeight / oldSize.canvasWidth),
           });
           this.scaleImgToCanvas();
           this.refreshCircleConfs();
@@ -91,9 +97,14 @@
           this.refreshLineConfs();
         };
       },
+      // imgDraggable(newVal) {
+      //   this.configImage.draggable = newVal;
+      // },
     },
     computed: {
       ...mapGetters([
+        'ptr',
+        'imgDraggable',
         'currentImg',
         'currentKeyPoints',
         'classes',
@@ -189,9 +200,9 @@
               configCircle: {
                 x: points[j],
                 y: points[j + 1],
-                radius: 4,
+                radius: 5,
                 fill: 'white',
-                stroke: 'black',
+                stroke: classColor[i],
                 strokeWidth: 2,
                 draggable: true,
               },
@@ -208,7 +219,7 @@
           result[cls] = {
             points: this.absCurrentKeyPoints.palm
               .concat(this.absCurrentKeyPoints[cls]),
-            stroke: 'black',
+            stroke: classColor[i],
             strokeWidth: 2,
           };
         }
